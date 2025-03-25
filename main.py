@@ -50,8 +50,8 @@ def normalize_channel_name(ch):
 
 def main():
     sources = [
-        "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.txt",
-        "https://raw.githubusercontent.com/alantang1977/JunTV/refs/heads/main/output/result.txt"
+        "https://github.com/ako112/cct/blob/main/live_ipv4.txt",
+        
     ]
 
     # 获取数据
