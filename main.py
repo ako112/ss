@@ -15,7 +15,9 @@ def fetch_source(url):
     try:
         resp = requests.get(url, timeout=10)
         resp.raise_for_status()
-        return [line.strip() for line in resp.text.splitlines() if "," in line]
+        lines = [line.strip() for line in resp.text.splitlines() if "," in line]
+        print(f"从 {url} 获取到 {len(lines)} 条数据")
+        return lines
     except Exception as e:
         print(f"获取 {url} 失败: {e}")
         return []
@@ -31,11 +33,15 @@ def test_url(channel_url):
         return TestResult(0, channel, url, get_quality_score(url))
     start = time.time()
     try:
-        subprocess.run(["ffmpeg", "-i", url, "-t", "3", "-f", "null", "-", "-loglevel", "quiet"],
-                       timeout=10, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(
+            ["ffmpeg", "-i", url, "-t", "3", "-f", "null", "-", "-loglevel", "quiet"],
+            timeout=10, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         delay = int((time.time() - start) * 1000)
+        print(f"测试 {url} 成功，延迟: {delay}ms")
         return TestResult(delay, channel, url, get_quality_score(url))
-    except Exception:
+    except Exception as e:
+        print(f"测试 {url} 失败: {e}")
         return TestResult(float("inf"), channel, url, get_quality_score(url))
 
 def main():
