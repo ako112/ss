@@ -1,3 +1,16 @@
+import requests
+
+def fetch_source(url):
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        lines = [line.strip() for line in resp.text.splitlines() if "," in line]
+        print(f"从 {url} 获取到 {len(lines)} 条数据")
+        return lines
+    except Exception as e:
+        print(f"获取 {url} 失败: {e}")
+        return []
+
 def main():
     sources = [
         "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.txt",
