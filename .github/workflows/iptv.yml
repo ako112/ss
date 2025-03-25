@@ -1,38 +1,20 @@
-name: IPTV Merge and Optimize
-
-on:
-  push:
-    branches: [main]
-  schedule:
-    - cron: '0 0 * * *' # 每天 UTC 0 点运行
-
+name: IPTV Optimize
+on: [push] # 仅推送触发，简化测试
 jobs:
-  optimize:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.13'
-      - name: Install dependencies
-        run: |
+      - uses: actions/setup-python@v4
+        with: { python-version: '3.13' }
+      - run: |
           sudo apt update
           sudo apt install ffmpeg
           pip install -r requirements.txt
-      - name: Run script
-        run: python main.py
-      - name: Commit results
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add gd/output/result.txt debug_log.txt
-          git commit -m "更新合并并优化的直播源" || echo "No changes to commit"
+      - run: python main.py
+      - run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add gd/output/result.txt
+          git commit -m "更新直播源" || echo "无更改"
           git push
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: iptv-output
-          path: |
-            gd/output/result.txt
-            debug_log.txt
