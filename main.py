@@ -45,7 +45,6 @@ def test_url(channel_url):
         return TestResult(float("inf"), channel, url, get_quality_score(url))
 
 def main():
-    # 直播源和排序列表
     sources = [
         "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.txt",
         "https://raw.githubusercontent.com/alantang1977/JunTV/refs/heads/main/output/result.txt"
@@ -68,16 +67,20 @@ def main():
             ch, url = line.split(",", 1)
             if ch in sort_list:
                 channels.setdefault(ch, []).append(url)
-        except:
+        except Exception as e:
+            print(f"解析 {line} 失败: {e}")
             continue
+    print(f"匹配到的频道数: {len(channels)}")
 
     # 测试并排序
     output = []
     with ThreadPoolExecutor(max_workers=8) as executor:
         for ch, urls in channels.items():
+            print(f"测试频道 {ch}，共 {len(urls)} 个 URL")
             results = list(executor.map(test_url, [(ch, url) for url in urls]))
             valid = sorted([r for r in results if r.delay != float("inf")],
                           key=lambda x: (-x.quality_score, x.delay))[:8]
+            print(f"频道 {ch} 有效 URL 数: {len(valid)}")
             output.extend([(r.channel, r.url) for r in valid])
 
     # 按排序列表顺序输出
