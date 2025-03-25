@@ -1,18 +1,22 @@
 name: IPTV Optimize
-on: [push] # 仅推送触发，简化测试
+on: [push] # 仅推送触发
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with: { python-version: '3.13' }
-      - run: |
+        with:
+          python-version: '3.13'
+      - name: Install dependencies
+        run: |
           sudo apt update
-          sudo apt install ffmpeg
+          sudo apt install -y ffmpeg
           pip install -r requirements.txt
-      - run: python main.py
-      - run: |
+      - name: Run script
+        run: python main.py
+      - name: Commit and push results
+        run: |
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           git add gd/output/result.txt
