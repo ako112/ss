@@ -50,7 +50,7 @@ def normalize_channel_name(ch):
 
 def main():
     sources = [
-        "https://raw.githubusercontent.com/ako112/cct/refs/heads/main/live_ipv4.txt",
+        "https://raw.githubusercontent.com/ako112/cct/refs/heads/main/ipv4.txt",
         
     ]
 
